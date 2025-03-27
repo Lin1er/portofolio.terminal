@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { FaCode, FaLaptopCode, FaEnvelope, FaGithub, FaLinkedin, FaInfoCircle, FaSun, FaMoon } from "react-icons/fa";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import Image from "next/image"; // Pastikan Image diimpor
 import projectsData from "./projects.json"; // Dynamic project data
 
 export default function Home() {
@@ -33,7 +33,7 @@ export default function Home() {
   useEffect(() => {
     // Display a visually enhanced welcome message on load
     setOutput([
-      <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="text-center">
+      <motion.div key="welcome" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="text-center">
         <p className="text-yellow-400 text-3xl font-bold">👋 Welcome to Ulinuha's Portfolio Terminal!</p>
         <p className="text-gray-300 mt-2">Type <code className="text-green-400">help</code> to explore available commands.</p>
         <p className="text-gray-400 text-sm mt-1">Tip: Use <code className="text-blue-400">Tab</code> for autocomplete.</p>
@@ -46,7 +46,7 @@ export default function Home() {
     let response = [];
     if (command === "help") {
       response = [
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <motion.div key="help" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
           <p className="text-yellow-400 text-xl">Available commands:</p>
           <ul className="list-disc pl-5">
             {commands.map((cmd, index) => (
@@ -82,19 +82,19 @@ export default function Home() {
       }
     } else if (command === "profile" || command === "whoami") {
       response = [
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg w-3/4 mx-auto">
+        <motion.div key="profile" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg w-3/4 mx-auto">
           <div className="flex flex-col md:flex-row items-center mb-6">
-            <Image src="/profile.jpeg" alt="Profile" className="h-100 w-100 rounded-full border-4 border-green-500 mr-4 object-cover" />
+            <Image src="/profile.jpeg" alt="Profile" className="h-100 w-100 rounded-full border-4 border-green-500 mr-4 object-cover" width={100} height={100} />
             <div>
 
               <div className="text-center md:text-left">
                 <p className="text-blue-400 text-lg font-semibold">Ulinuha</p>
                 <p className="text-blue-400 text-sm">Full Stack Developer</p>
-                <p className="text-gray-300 text-sm">I'm a passionate software developer with a strong interest in technology, IoT, and web development. Since middle school, I've been building Discord bots, Minecraft servers, and various web apps. Now, I'm diving deeper into Next.js, Laravel, and ESP32 projects.</p>
+                <p className="text-gray-300 text-sm">I&apos;m a passionate software developer with a strong interest in technology, IoT, and web development. Since middle school, I&apos;ve been building Discord bots, Minecraft servers, and various web apps. Now, I&apos;m diving deeper into Next.js, Laravel, and ESP32 projects.</p>
               </div>
               <div className="ml-auto flex flex-col md:flex-row gap-4 mt-5">
-                <Image height={150} src="https://github-readme-stats.vercel.app/api?username=lin1er&show_icons=true&theme=algolia&include_all_commits=true&count_private=true" alt="GitHub Stats" />
-                <Image height={150} src="https://github-readme-stats.vercel.app/api/top-langs/?username=lin1er&layout=compact&theme=algolia" alt="Top Languages" />
+                <Image height={150} width={300} src="https://github-readme-stats.vercel.app/api?username=lin1er&show_icons=true&theme=algolia&include_all_commits=true&count_private=true" alt="GitHub Stats" />
+                <Image height={150} width={300} src="https://github-readme-stats.vercel.app/api/top-langs/?username=lin1er&layout=compact&theme=algolia" alt="Top Languages" />
               </div>
             </div>
           </div>
@@ -143,12 +143,12 @@ export default function Home() {
       ];
     } else if (command === "projects" || command === "ls") {
       response = [
-        <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <motion.div key="projects" initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
           <p className="text-yellow-400 text-xl mb-4">Projects:</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {projectsData.map((project, index) => (
               <div key={index} className="bg-gray-900 p-4 rounded-lg shadow-md cursor-pointer" onClick={() => setModalContent(project)}>
-                <Image src={project.thumbnail} alt={project.name} className="rounded-md mb-3" />
+                <Image src={project.thumbnail} alt={project.name} className="rounded-md mb-3" width={300} height={200} />
                 <p className="text-blue-400 text-lg font-semibold">{project.name}</p>
                 <p className="text-gray-300 text-sm">{project.description}</p>
               </div>
@@ -158,7 +158,7 @@ export default function Home() {
       ];
     } else if (command === "skills") {
       response = [
-        <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <motion.div key="skills" initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
           <p className="text-green-400 text-xl">Skills:</p>
           <ul className="list-disc pl-5">
             <li><FaCode className="inline mr-2 text-yellow-400" /> JavaScript, React, Next.js, Laravel</li>
@@ -169,7 +169,7 @@ export default function Home() {
       ];
     } else if (command === "contact") {
       response = [
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <motion.div key="contact" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
           <p className="text-purple-400 text-xl">Contact:</p>
           <ul className="list-disc pl-5">
             <li><FaEnvelope className="inline mr-2 text-yellow-400" /> Email: m.ulinasidiki@gmail.com</li>
@@ -186,10 +186,10 @@ export default function Home() {
         "Success is just a commit away."
       ];
       const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-      response = [<p className="text-green-400">{randomFortune}</p>];
+      response = [<p key="fortune" className="text-green-400">{randomFortune}</p>];
     } else if (command === "ascii") {
       response = [
-        <pre className="text-green-400">
+        <pre key="ascii" className="text-green-400">
           {`
   ______   __     __  __     ______     ______    
  /\\  ___\\ /\\ \\   /\\ \\/\\ \\   /\\  ___\\   /\\  == \\   
@@ -202,7 +202,7 @@ export default function Home() {
     } else if (command === "clear") {
       setOutput((prev) => [
         ...prev,
-        <motion.div initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.5 }} className="text-gray-500">
+        <motion.div key="clear" initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.5 }} className="text-gray-500">
           Clearing terminal...
         </motion.div>
       ]);
@@ -211,10 +211,10 @@ export default function Home() {
       return;
     } else if (!commands.includes(command.split(" ")[0])) {
       response = [
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-red-400">
+        <motion.div key="unknown" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-red-400">
           ❌ Unknown command: <code>{command}</code>
         </motion.div>,
-        <p className="text-gray-400">Type <code className="text-green-400">help</code> to see the list of available commands.</p>
+        <p key="unknown-help" className="text-gray-400">Type <code className="text-green-400">help</code> to see the list of available commands.</p>
       ];
     } else {
       // ...existing command handling logic...
@@ -222,7 +222,7 @@ export default function Home() {
     setTimeout(() => {
       setOutput((prev) => [
         ...prev,
-        <p className="text-yellow-500">{username}@{hostname}:~$ {command}</p>,
+        <p key={`command-${command}`} className="text-yellow-500">{username}@{hostname}:~$ {command}</p>,
         ...response
       ]);
       setIsLoading(false);
