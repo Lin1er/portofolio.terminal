@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { FaCode, FaLaptopCode, FaEnvelope, FaGithub, FaLinkedin, FaInfoCircle, FaSun, FaMoon } from "react-icons/fa";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import projectsData from "./projects.json"; // Dynamic project data
 
 export default function Home() {
