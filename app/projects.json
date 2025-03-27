@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Portfolio Website",
+    "description": "A personal portfolio built with Next.js and Tailwind CSS.",
+    "repo": "https://github.com/lin1er/portfolio",
+    "thumbnail": "/portfolio-thumbnail.png"
+  },
+  {
+    "name": "Project Management App",
+    "description": "A Laravel and React-based app for managing projects efficiently.",
+    "repo": "https://github.com/lin1er/project-management",
+    "thumbnail": "/project-management-thumbnail.png"
+  },
+  {
+    "name": "IoT Strobo Controller",
+    "description": "An IoT-based stroboscope controller using ESP32 and Flutter.",
+    "repo": "https://github.com/lin1er/iot-strobo-controller",
+    "thumbnail": "/iot-thumbnail.png"
+  }
+]

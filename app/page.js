@@ -1,103 +1,326 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect, useRef } from "react";
+import { FaCode, FaLaptopCode, FaEnvelope, FaGithub, FaLinkedin, FaInfoCircle, FaSun, FaMoon } from "react-icons/fa";
+import { motion } from "framer-motion";
+import projectsData from "./projects.json"; // Dynamic project data
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState([]);
+  const [theme, setTheme] = useState("dark");
+  const [history, setHistory] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [username, setUsername] = useState("ulin");
+  const [hostname, setHostname] = useState("portfolio");
+  const [isLoading, setIsLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState([]); // State for autocomplete suggestions
+  const [modalContent, setModalContent] = useState(null); // For interactive project modal
+  const terminalRef = useRef(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const commands = [
+    "help", "profile", "projects", "skills", "contact", "theme", "clear",
+    "set username", "set hostname", "ls", "whoami", "fortune", "ascii"
+  ];
+
+  const themes = ["dark", "light", "solarized", "dracula"];
+
+  useEffect(() => {
+    terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+  }, [output]);
+
+  useEffect(() => {
+    // Display a visually enhanced welcome message on load
+    setOutput([
+      <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="text-center">
+        <p className="text-yellow-400 text-3xl font-bold">👋 Welcome to Ulinuha's Portfolio Terminal!</p>
+        <p className="text-gray-300 mt-2">Type <code className="text-green-400">help</code> to explore available commands.</p>
+        <p className="text-gray-400 text-sm mt-1">Tip: Use <code className="text-blue-400">Tab</code> for autocomplete.</p>
+      </motion.div>
+    ]);
+  }, []);
+
+  const handleCommand = async (command) => {
+    setIsLoading(true);
+    let response = [];
+    if (command === "help") {
+      response = [
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <p className="text-yellow-400 text-xl">Available commands:</p>
+          <ul className="list-disc pl-5">
+            {commands.map((cmd, index) => (
+              <li key={index}><span className="text-green-400">{cmd}</span></li>
+            ))}
+          </ul>
+          <p className="text-green-400 text-lg mt-2">Type the command in the format: <code>$ command</code></p>
+        </motion.div>
+      ];
+    } else if (command.startsWith("set username")) {
+      const newUsername = command.split(" ")[2];
+      if (newUsername) {
+        setUsername(newUsername);
+        response = [`Username updated to ${newUsername}.`];
+      } else {
+        response = ["Usage: set username <new_username>"];
+      }
+    } else if (command.startsWith("set hostname")) {
+      const newHostname = command.split(" ")[2];
+      if (newHostname) {
+        setHostname(newHostname);
+        response = [`Hostname updated to ${newHostname}.`];
+      } else {
+        response = ["Usage: set hostname <new_hostname>"];
+      }
+    } else if (command === "theme") {
+      const newTheme = command.split(" ")[1];
+      if (themes.includes(newTheme)) {
+        setTheme(newTheme);
+        response = [`Theme switched to ${newTheme}.`];
+      } else {
+        response = [`Available themes: ${themes.join(", ")}`];
+      }
+    } else if (command === "profile" || command === "whoami") {
+      response = [
+        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg w-3/4 mx-auto">
+          <div className="flex flex-col md:flex-row items-center mb-6">
+            <img src="/profile.jpeg" alt="Profile" className="h-100 w-100 rounded-full border-4 border-green-500 mr-4 object-cover" />
+            <div>
+
+              <div className="text-center md:text-left">
+                <p className="text-blue-400 text-lg font-semibold">Ulinuha</p>
+                <p className="text-blue-400 text-sm">Full Stack Developer</p>
+                <p className="text-gray-300 text-sm">I'm a passionate software developer with a strong interest in technology, IoT, and web development. Since middle school, I've been building Discord bots, Minecraft servers, and various web apps. Now, I'm diving deeper into Next.js, Laravel, and ESP32 projects.</p>
+              </div>
+              <div className="ml-auto flex flex-col md:flex-row gap-4 mt-5">
+                <img height={150} src="https://github-readme-stats.vercel.app/api?username=lin1er&show_icons=true&theme=algolia&include_all_commits=true&count_private=true" alt="GitHub Stats" />
+                <img height={150} src="https://github-readme-stats.vercel.app/api/top-langs/?username=lin1er&layout=compact&theme=algolia" alt="Top Languages" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-6">
+            <p className="text-yellow-400 text-xl mb-4">🚀 Tech Stack:</p>
+            <div className="flex flex-wrap gap-4">
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/html5-%23E34F26.svg?&style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/css3-%231572B6.svg?&style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/javascript-%23323330.svg?&style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="JavaScript" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/react-%2320232a.svg?&style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/Next.js-%23000000.svg?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/laravel-%23e4634c.svg?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/python-%2314354C.svg?&style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/MySQL-%2300f365.svg?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/arduino-%230066CC.svg?style=for-the-badge&logo=arduino&logoColor=white" alt="Arduino" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/Git-%23F1502F.svg?style=for-the-badge&logo=git&logoColor=white" alt="Git" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+              </div>
+              <div className="text-center">
+                <img src="https://img.shields.io/badge/Node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ];
+    } else if (command === "projects" || command === "ls") {
+      response = [
+        <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <p className="text-yellow-400 text-xl mb-4">Projects:</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {projectsData.map((project, index) => (
+              <div key={index} className="bg-gray-900 p-4 rounded-lg shadow-md cursor-pointer" onClick={() => setModalContent(project)}>
+                <img src={project.thumbnail} alt={project.name} className="rounded-md mb-3" />
+                <p className="text-blue-400 text-lg font-semibold">{project.name}</p>
+                <p className="text-gray-300 text-sm">{project.description}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      ];
+    } else if (command === "skills") {
+      response = [
+        <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <p className="text-green-400 text-xl">Skills:</p>
+          <ul className="list-disc pl-5">
+            <li><FaCode className="inline mr-2 text-yellow-400" /> JavaScript, React, Next.js, Laravel</li>
+            <li><FaCode className="inline mr-2 text-blue-400" /> Java, Python, C++</li>
+            <li><FaCode className="inline mr-2 text-purple-400" /> IoT & Embedded Systems</li>
+          </ul>
+        </motion.div>
+      ];
+    } else if (command === "contact") {
+      response = [
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <p className="text-purple-400 text-xl">Contact:</p>
+          <ul className="list-disc pl-5">
+            <li><FaEnvelope className="inline mr-2 text-yellow-400" /> Email: m.ulinasidiki@gmail.com</li>
+            <li><FaGithub className="inline mr-2 text-white" /> GitHub: <a href="https://github.com/lin1er" className="text-blue-400 underline">github.com/ulinuha</a></li>
+            <li><FaLinkedin className="inline mr-2 text-blue-500" /> LinkedIn: <a href="https://linkedin.com/in/m-ulinuha-as-shiddiqy" className="text-blue-400 underline">linkedin.com/in/ulinuha</a></li>
+          </ul>
+        </motion.div>
+      ];
+    } else if (command === "fortune") {
+      const fortunes = [
+        "You will write bug-free code today!",
+        "A new project is on the horizon.",
+        "Your debugging skills will save the day.",
+        "Success is just a commit away."
+      ];
+      const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+      response = [<p className="text-green-400">{randomFortune}</p>];
+    } else if (command === "ascii") {
+      response = [
+        <pre className="text-green-400">
+          {`
+  ______   __     __  __     ______     ______    
+ /\\  ___\\ /\\ \\   /\\ \\/\\ \\   /\\  ___\\   /\\  == \\   
+ \\ \\  __\\ \\ \\ \\  \\ \\ \\_\\ \\  \\ \\  __\\   \\ \\  __<   
+  \\ \\_\\    \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\ 
+   \\/_/     \\/_/   \\/_____/   \\/_____/   \\/_/ /_/ 
+          `}
+        </pre>
+      ];
+    } else if (command === "clear") {
+      setOutput((prev) => [
+        ...prev,
+        <motion.div initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.5 }} className="text-gray-500">
+          Clearing terminal...
+        </motion.div>
+      ]);
+      setTimeout(() => setOutput([]), 500); // Clear after animation
+      setIsLoading(false);
+      return;
+    } else if (!commands.includes(command.split(" ")[0])) {
+      response = [
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-red-400">
+          ❌ Unknown command: <code>{command}</code>
+        </motion.div>,
+        <p className="text-gray-400">Type <code className="text-green-400">help</code> to see the list of available commands.</p>
+      ];
+    } else {
+      // ...existing command handling logic...
+    }
+    setTimeout(() => {
+      setOutput((prev) => [
+        ...prev,
+        <p className="text-yellow-500">{username}@{hostname}:~$ {command}</p>,
+        ...response
+      ]);
+      setIsLoading(false);
+    }, 500); // Simulate loading delay
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (input.trim()) {
+      setHistory((prev) => [...prev, input.trim()]);
+      setHistoryIndex(-1);
+      handleCommand(input.trim());
+    }
+    setInput("");
+    setSuggestions([]);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowUp") {
+      if (historyIndex < history.length - 1) {
+        const newIndex = historyIndex + 1;
+        setHistoryIndex(newIndex);
+        setInput(history[history.length - 1 - newIndex]);
+      }
+    } else if (e.key === "ArrowDown") {
+      if (historyIndex > 0) {
+        const newIndex = historyIndex - 1;
+        setHistoryIndex(newIndex);
+        setInput(history[history.length - 1 - newIndex]);
+      } else {
+        setHistoryIndex(-1);
+        setInput("");
+      }
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      if (suggestions.length > 0) {
+        setInput(suggestions[0]); // Autocomplete with the first suggestion
+        setSuggestions([]); // Hide suggestions after autocomplete
+      }
+    }
+  };
+
+  const handleInputChange = (value) => {
+    setInput(value);
+    if (value.trim() === "") {
+      setSuggestions([]); // Hide suggestions when input is cleared
+    } else {
+      const matchingCommands = commands.filter((cmd) => cmd.startsWith(value));
+      setSuggestions(matchingCommands);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setInput(suggestion);
+    setSuggestions([]); // Hide suggestions after selection
+  };
+
+  return (
+    <div className={`${theme === "dark" ? "bg-gradient-to-r from-gray-900 to-black" : theme === "solarized" ? "bg-yellow-100" : theme === "dracula" ? "bg-purple-900" : "bg-gradient-to-r from-gray-100 to-white"} text-green-500 h-screen p-4 lg:p-10 font-mono flex flex-col`}>
+      <div ref={terminalRef} className="overflow-auto flex-1 px-2 lg:px-4 pb-4">
+        {output.map((line, index) => (
+          <motion.div key={index} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="mb-2 text-sm lg:text-base">{line}</motion.div>
+        ))}
+        {isLoading && <p className="text-gray-500 text-sm lg:text-base">Loading...</p>}
+      </div>
+      <form onSubmit={handleSubmit} className="relative flex w-full lg:w-3/4 self-center border-t border-green-500 pt-2">
+        {suggestions.length > 0 && (
+          <ul className="absolute bottom-full left-0 bg-gray-800 text-green-400 w-full lg:w-1/2 mb-1 rounded-lg shadow-lg z-10">
+            {suggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                className="px-2 lg:px-4 py-1 lg:py-2 hover:bg-gray-700 cursor-pointer text-sm lg:text-base"
+                onClick={() => handleSuggestionClick(suggestion)}
+              >
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        )}
+        <span className="text-yellow-500 text-sm lg:text-base">{username}@{hostname}:~$</span>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => handleInputChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="bg-transparent text-green-500 outline-none flex-1 ml-2 caret-green-500 text-sm lg:text-base"
+          autoFocus
+        />
+      </form>
+      {modalContent && (
+        <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center z-20">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-white w-3/4 lg:w-1/2">
+            <h2 className="text-yellow-400 text-xl mb-4">{modalContent.name}</h2>
+            <p className="text-gray-300">{modalContent.description}</p>
+            <a href={modalContent.repo} target="_blank" className="text-green-400 underline mt-4 block">View Repository</a>
+            <button onClick={() => setModalContent(null)} className="mt-4 bg-red-500 px-4 py-2 rounded">Close</button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
     </div>
   );
 }
