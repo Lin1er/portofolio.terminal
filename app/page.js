@@ -1,5 +1,5 @@
 'use client';
-
+import Image from "next/image"; // Pastikan Image diimpor
 import { useState, useEffect, useRef } from "react";
 import { FaCode, FaLaptopCode, FaEnvelope, FaGithub, FaLinkedin, FaInfoCircle, FaSun, FaMoon } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -83,7 +83,7 @@ export default function Home() {
       response = [
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-800 p-6 rounded-lg shadow-lg w-3/4 mx-auto">
           <div className="flex flex-col md:flex-row items-center mb-6">
-            <img src="/profile.jpeg" alt="Profile" className="h-100 w-100 rounded-full border-4 border-green-500 mr-4 object-cover" />
+            <Image src="/profile.jpeg" alt="Profile" className="rounded-full border-4 border-green-500 mr-4 object-cover" width={100} height={100} />
             <div>
 
               <div className="text-center md:text-left">
@@ -92,8 +92,8 @@ export default function Home() {
                 <p className="text-gray-300 text-sm">I'm a passionate software developer with a strong interest in technology, IoT, and web development. Since middle school, I've been building Discord bots, Minecraft servers, and various web apps. Now, I'm diving deeper into Next.js, Laravel, and ESP32 projects.</p>
               </div>
               <div className="ml-auto flex flex-col md:flex-row gap-4 mt-5">
-                <img height={150} src="https://github-readme-stats.vercel.app/api?username=lin1er&show_icons=true&theme=algolia&include_all_commits=true&count_private=true" alt="GitHub Stats" />
-                <img height={150} src="https://github-readme-stats.vercel.app/api/top-langs/?username=lin1er&layout=compact&theme=algolia" alt="Top Languages" />
+                <Image height={150} width={300} src="https://github-readme-stats.vercel.app/api?username=lin1er&show_icons=true&theme=algolia&include_all_commits=true&count_private=true" alt="GitHub Stats" />
+                <Image height={150} width={300} src="https://github-readme-stats.vercel.app/api/top-langs/?username=lin1er&layout=compact&theme=algolia" alt="Top Languages" />
               </div>
             </div>
           </div>
@@ -101,40 +101,40 @@ export default function Home() {
             <p className="text-yellow-400 text-xl mb-4">🚀 Tech Stack:</p>
             <div className="flex flex-wrap gap-4">
               <div className="text-center">
-                <img src="https://img.shields.io/badge/html5-%23E34F26.svg?&style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
+                <Image src="https://img.shields.io/badge/html5-%23E34F26.svg?&style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/css3-%231572B6.svg?&style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+                <Image src="https://img.shields.io/badge/css3-%231572B6.svg?&style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/javascript-%23323330.svg?&style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="JavaScript" />
+                <Image src="https://img.shields.io/badge/javascript-%23323330.svg?&style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="JavaScript" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/react-%2320232a.svg?&style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React" />
+                <Image src="https://img.shields.io/badge/react-%2320232a.svg?&style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/Next.js-%23000000.svg?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+                <Image src="https://img.shields.io/badge/Next.js-%23000000.svg?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/laravel-%23e4634c.svg?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" />
+                <Image src="https://img.shields.io/badge/laravel-%23e4634c.svg?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/python-%2314354C.svg?&style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+                <Image src="https://img.shields.io/badge/python-%2314354C.svg?&style=for-the-badge&logo=python&logoColor=white" alt="Python" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/MySQL-%2300f365.svg?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+                <Image src="https://img.shields.io/badge/MySQL-%2300f365.svg?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/arduino-%230066CC.svg?style=for-the-badge&logo=arduino&logoColor=white" alt="Arduino" />
+                <Image src="https://img.shields.io/badge/arduino-%230066CC.svg?style=for-the-badge&logo=arduino&logoColor=white" alt="Arduino" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/Git-%23F1502F.svg?style=for-the-badge&logo=git&logoColor=white" alt="Git" />
+                <Image src="https://img.shields.io/badge/Git-%23F1502F.svg?style=for-the-badge&logo=git&logoColor=white" alt="Git" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+                <Image src="https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" width={150} height={50} />
               </div>
               <div className="text-center">
-                <img src="https://img.shields.io/badge/Node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+                <Image src="https://img.shields.io/badge/Node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" width={150} height={50} />
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {projectsData.map((project, index) => (
               <div key={index} className="bg-gray-900 p-4 rounded-lg shadow-md cursor-pointer" onClick={() => setModalContent(project)}>
-                <img src={project.thumbnail} alt={project.name} className="rounded-md mb-3" />
+                <Image src={project.thumbnail} alt={project.name} className="rounded-md mb-3" width={300} height={200} />
                 <p className="text-blue-400 text-lg font-semibold">{project.name}</p>
                 <p className="text-gray-300 text-sm">{project.description}</p>
               </div>
